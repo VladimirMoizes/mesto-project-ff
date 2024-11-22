@@ -1,11 +1,4 @@
-import {
-  cardTemplate,
-  closeButtonImage,
-  popupImage,
-  cardsForLike,
-} from "../index";
-import { openPopup, closePopup } from "./modal";
-
+// Массив карточек
 export const initialCards = [
   {
     name: "Архыз",
@@ -33,48 +26,44 @@ export const initialCards = [
   },
 ];
 
+// Клонируем шаблон для карточки
+const cardTemplate = document.querySelector("#card-template").content;
+
 // Функция создания карточки
 export function createCard(card, deleteCard, likeCard, showImage) {
+  const cardsForLike = document.querySelector(".places__list");
+
   const cardElement = cardTemplate.querySelector(".card").cloneNode(true);
   const cardElementImage = cardElement.querySelector(".card__image");
   const cardElementTitle = cardElement.querySelector(".card__title");
   const cardDeleteButton = cardElement.querySelector(".card__delete-button");
 
-  cardElementImage.src = card.link;
-  cardElementTitle.textContent = card.name;
+  cardElementImage.src = card.link; // Добавлен src для изображения
+  cardElementImage.alt = card.name; // Добавлен alt для изображения
+  cardElementTitle.textContent = card.name; // Добавлена подписть для изображения
+
+  // слушатель для кнопки удаления выполняет функцию удаления
   cardDeleteButton.addEventListener("click", function (evt) {
     deleteCard(evt.target.closest(".places__item"));
   });
 
-  // По клику на картинку открывается на весь экран
-  cardElementImage.addEventListener("click", () => 
-    showImage(card)
-  );
+  // При нажатии на картинку выполняется функция открытия картинки на весь экран
+  cardElementImage.addEventListener("click", () => showImage(card));
 
-  
-
-  // По клику вызов функции лайка
+  // Слушатель для лайка
   cardsForLike.addEventListener("click", likeCard);
 
   return cardElement;
 }
 
-// @todo: Функция удаления карточки
+// Функция удаления карточки
 export function deleteCardFunction(del) {
   del.remove();
 }
 
-// Функция лайка
+// Функция лайка карточки 
 export function likeCardFunction(evt) {
   if (evt.target.classList.contains("card__like-button")) {
-    evt.target.classList.add("card__like-button_is-active");
+    evt.target.classList.toggle("card__like-button_is-active");
   }
-}
-
-// Функция для показа попапа с изображением
-export function showImageFunction(image) {
-  popupImage.querySelector(".popup__image").src = image.link;
-  popupImage.querySelector(".popup__caption").textContent = image.name;
-  openPopup(popupImage);
-  closeButtonImage.addEventListener("click", () => closePopup(popupImage));
 }

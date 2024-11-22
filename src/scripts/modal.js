@@ -12,6 +12,9 @@ export function openPopup(element) {
 // Функция, выполняемая при нажатии на крестик, overlay и escape
 export function closePopup(element) {
   element.classList.remove("popup_is-opened");
+  if (element.classList.contains("popup_type_new-card")) {
+    element.querySelector(".popup__form").reset();
+  }
   document.removeEventListener("keydown", (evt) => {
     if (evt.key === "Escape") closePopup(element);
   });
