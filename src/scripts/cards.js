@@ -61,7 +61,7 @@ export function deleteCardFunction(del) {
   del.remove();
 }
 
-// Функция лайка карточки 
+// Функция лайка карточки
 export function likeCardFunction(evt) {
   if (evt.target.classList.contains("card__like-button")) {
     evt.target.classList.toggle("card__like-button_is-active");

@@ -17,36 +17,21 @@ const formElement = profilePopup.querySelector(".popup__form");
 const nameInput = formElement.querySelector('input[name="name"]');
 const jobInput = formElement.querySelector('input[name="description"]');
 
+// Данные формы профиля
+const profileTitle = document.querySelector(".profile__title");
+const profileDescription = document.querySelector(".profile__description");
+
 // По умолчанию значения в полях
-nameInput.value = document.querySelector(".profile__title").textContent;
-jobInput.value = document.querySelector(".profile__description").textContent;
+nameInput.value = profileTitle.textContent;
+jobInput.value = profileDescription.textContent;
 
 // Модалка для картинок
 export const popupImage = document.querySelector(".popup_type_image");
 export const closeButtonImage = popupImage.querySelector(".popup__close");
 
-closeButtonImage.addEventListener("click", () => closePopup(popupImage));
-
-// Функция для открытия картинки по нажатию
-function showImageFunction(image) {
-  popupImage.querySelector(".popup__image").src = image.link;
-  popupImage.querySelector(".popup__caption").textContent = image.name;
-  openPopup(popupImage);
-}
-
-// Сохранение заполненных данных в форме профиля
-function handleFormSubmit(evt) {
-  evt.preventDefault();
-
-  const profileTitle = document.querySelector(".profile__title");
-  const profileDescription = document.querySelector(".profile__description");
-
-  profileTitle.textContent = nameInput.value;
-  profileDescription.textContent = jobInput.value;
-  closePopup(profilePopup);
-}
-
-formElement.addEventListener("submit", handleFormSubmit);
+// Картинка и описание в модалке открытия картинки
+const popupImageImg = popupImage.querySelector(".popup__image");
+const popupImageCaption = popupImage.querySelector(".popup__caption");
 
 // Форма добавления карточки
 const addButton = document.querySelector(".profile__add-button");
@@ -57,50 +42,60 @@ const formElementAdd = addPopup.querySelector(".popup__form");
 const nameInputAdd = formElementAdd.querySelector('input[name="place-name"]');
 const linkInputAdd = formElementAdd.querySelector('input[name="link"]');
 
+// Галерея карточек
+const gallery = document.querySelector(".places__list");
+
 const popupAll = document.querySelectorAll(".popup");
 popupAll.forEach((item) => {
   item.classList.add("popup_is-animated");
 });
 
+// Функция для открытия картинки по нажатию
+function showImageFunction(image) {
+  popupImageImg.src = image.link;
+  popupImageCaption.textContent = image.name;
+  openPopup(popupImage);
+}
+
+// Сохранение заполненных данных в форме профиля
+function handleProfileFormSubmit(evt) {
+  evt.preventDefault();
+
+  profileTitle.textContent = nameInput.value;
+  profileDescription.textContent = jobInput.value;
+  closePopup(profilePopup);
+}
+
 // Функция добавления карточки
-function handleFormAddSubmit(evt) {
+function handleAddFormSubmit(evt) {
   evt.preventDefault();
 
   const obj = {};
   obj.link = linkInputAdd.value;
   obj.name = nameInputAdd.value;
 
-  initialCards.unshift(obj);
+  gallery.prepend(
+    createCard(obj, deleteCardFunction, likeCardFunction, showImageFunction)
+  );
 
-  initialCards.forEach((item, index) => {
-    if (index === 0) {
-      document
-        .querySelector(".places__list")
-        .prepend(
-          createCard(
-            item,
-            deleteCardFunction,
-            likeCardFunction,
-            showImageFunction
-          )
-        );
-    }
-  });
   closePopup(addPopup);
   linkInputAdd.value = "";
   nameInputAdd.value = "";
 }
 
-formElementAdd.addEventListener("submit", handleFormAddSubmit);
-
 // Вывод карточек из массива на страницу
 initialCards.forEach((item) => {
-  document
-    .querySelector(".places__list")
-    .append(
-      createCard(item, deleteCardFunction, likeCardFunction, showImageFunction)
-    );
+  gallery.append(
+    createCard(item, deleteCardFunction, likeCardFunction, showImageFunction)
+  );
 });
+
+// Слушатель закрытия модалки с картинкой
+closeButtonImage.addEventListener("click", () => closePopup(popupImage));
+
+// Слушатели отправки двух форм
+formElement.addEventListener("submit", handleProfileFormSubmit);
+formElementAdd.addEventListener("submit", handleAddFormSubmit);
 
 // Слушатели клика для двух форм для открытия
 profileButton.addEventListener("click", () => openPopup(profilePopup));
