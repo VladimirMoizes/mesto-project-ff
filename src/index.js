@@ -98,7 +98,11 @@ formElement.addEventListener("submit", handleProfileFormSubmit);
 formElementAdd.addEventListener("submit", handleAddFormSubmit);
 
 // Слушатели клика для двух форм для открытия
-profileButton.addEventListener("click", () => openPopup(profilePopup));
+profileButton.addEventListener("click", () => {
+  openPopup(profilePopup);
+  nameInput.value = profileTitle.textContent;
+  jobInput.value = profileDescription.textContent;
+});
 addButton.addEventListener("click", () => openPopup(addPopup));
 
 // Слушатели клика для двух форм для закрытия
