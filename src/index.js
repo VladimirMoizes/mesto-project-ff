@@ -53,6 +53,7 @@ popupAll.forEach((item) => {
 // Функция для открытия картинки по нажатию
 function showImageFunction(image) {
   popupImageImg.src = image.link;
+  popupImageImg.alt = image.name;
   popupImageCaption.textContent = image.name;
   openPopup(popupImage);
 }
@@ -79,8 +80,7 @@ function handleAddFormSubmit(evt) {
   );
 
   closePopup(addPopup);
-  linkInputAdd.value = "";
-  nameInputAdd.value = "";
+  formElementAdd.reset();
 }
 
 // Вывод карточек из массива на страницу

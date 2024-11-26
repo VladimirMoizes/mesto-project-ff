@@ -1,9 +1,9 @@
 // Именованная функция для закрытия по нажатию Esc
 const closeByEsc = (evt) => {
-  if (evt.key === "Escape")
-    document
-      .querySelector(".popup_is-opened")
-      .classList.remove("popup_is-opened");
+  const openedPopup = document.querySelector(".popup_is-opened");
+  if (evt.key === "Escape") {
+    closePopup(openedPopup);
+  }
 };
 
 // Функция, выполняемая при нажатии на кнопку - открывает форму и вешает слушатели событий
@@ -18,8 +18,5 @@ export const openPopup = (element) => {
 // Функция, выполняемая при нажатии на крестик, overlay и escape
 export const closePopup = (element) => {
   element.classList.remove("popup_is-opened");
-  if (element.classList.contains("popup_type_new-card")) {
-    element.querySelector(".popup__form").reset();
-  }
   document.removeEventListener("keydown", closeByEsc);
 };
