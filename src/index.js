@@ -1,9 +1,5 @@
 import "./pages/index.css";
-import {
-  createCard,
-  deleteCardFunction,
-  likeCardFunction,
-} from "./scripts/cards";
+import { createCard, deleteCardFunction } from "./scripts/cards";
 import { openPopup, closePopup } from "./scripts/modal";
 import { enableValidation, clearValidation } from "./scripts/validation";
 import {
@@ -13,7 +9,8 @@ import {
   addNewCard,
   deleteCard,
   changeAvatar,
-  addLike
+  addLike,
+  deleteCardLike,
 } from "./scripts/api";
 
 // Форма для обновления аватара
@@ -96,8 +93,7 @@ getInitialCards().then((data) => {
       createCard(
         item,
         deleteCardFunction,
-        () => {likeCardFunction,
-          addLike(item)},
+        handleLikeCard,
         showImageFunction,
         () => deleteCard(item)
       )
@@ -111,6 +107,20 @@ getUserId().then((data) => {
   profileDescription.textContent = data.about;
   profileImage.style.backgroundImage = `url(${data.avatar})`;
 });
+
+export const handleLikeCard = (card, cardLikeButton, cardLikesCounter) => {
+  if (!cardLikeButton.classList.contains("card__like-button_is-active")) {
+    addLike(card).then((item) => {
+      cardLikeButton.classList.add("card__like-button_is-active");
+      cardLikesCounter.textContent = item.likes.length;
+    });
+  } else {
+    deleteCardLike(card).then((item) => {
+      cardLikeButton.classList.remove("card__like-button_is-active");
+      cardLikesCounter.textContent = item.likes.length;
+    });
+  }
+};
 
 // Слушатель закрытия модалки с картинкой
 closeButtonImage.addEventListener("click", () => closePopup(popupImage));
@@ -164,7 +174,7 @@ formElementAdd.addEventListener("submit", (evt) => {
       createCard(
         newCard,
         deleteCardFunction,
-        likeCardFunction,
+        handleLikeCard,
         showImageFunction,
         () => deleteCard(newCard)
       )
@@ -174,11 +184,6 @@ formElementAdd.addEventListener("submit", (evt) => {
   formElementAdd.reset();
   buttonImageForm.textContent = "Сохранение...";
 });
-
-// Promise.all([getInitialCards(), getUserId()]).then(data => {
-//   console.log(data)
-// }
-// )
 
 // Слушатели клика для двух форм для открытия и очистки ошибок валидации
 profileButton.addEventListener("click", () => {

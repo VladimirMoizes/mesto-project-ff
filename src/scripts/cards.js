@@ -43,6 +43,7 @@ export function createCard(
   const cardElementImage = cardElement.querySelector(".card__image");
   const cardElementTitle = cardElement.querySelector(".card__title");
   const cardDeleteButton = cardElement.querySelector(".card__delete-button");
+  const cardLikeButton = cardElement.querySelector(".card__like-button");
   const countLikes = cardElement.querySelector(".card__like-text");
   // console.log(cardElement);
 
@@ -52,6 +53,10 @@ export function createCard(
 
   if (card.owner._id !== "1da0c5b8f0455ce337c799da") {
     cardDeleteButton.remove();
+  }
+
+  if (card.likes.some((like) => like._id === "1da0c5b8f0455ce337c799da")) {
+    cardLikeButton.classList.add("card__like-button_is-active");
   }
 
   countLikes.textContent = card.likes.length;
@@ -66,7 +71,9 @@ export function createCard(
   cardElementImage.addEventListener("click", () => showImage(card));
 
   // Слушатель для лайка
-  cardsForLike.addEventListener("click", () => likeCard);
+  cardLikeButton.addEventListener("click", () => {
+    likeCard(card, cardLikeButton, countLikes);
+  });
 
   return cardElement;
 }
@@ -77,9 +84,8 @@ export function deleteCardFunction(evt) {
 }
 
 // Функция лайка карточки
-export function likeCardFunction(evt) {
-  if (evt.target.classList.contains("card__like-button")) {
-    evt.target.classList.toggle("card__like-button_is-active");
-  }
-  // putLike();
-}
+// export function likeCardFunction(evt) {
+//   if (evt.target.classList.contains("card__like-button")) {
+//     evt.target.classList.toggle("card__like-button_is-active");
+//   }
+// }
