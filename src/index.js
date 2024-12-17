@@ -13,6 +13,8 @@ import {
   deleteCardLike,
 } from "./scripts/api";
 
+// Я ЗАБЫЛ ЗАПУШИТЬ, ПРОСТИТЕ)
+
 // Форма для обновления аватара
 const avatar = document.querySelector(".profile__image");
 const formAvatar = document.querySelector(".popup_type_new-ava");
@@ -86,9 +88,8 @@ enableValidation({
   errorClass: "popup__error_visible",
 });
 
-// Вывод карточек на страницу
-getInitialCards().then((data) => {
-  data.forEach((item) => {
+Promise.all([getInitialCards(), getUserId()]).then(([card, user]) => {
+  card.forEach((item) => {
     gallery.append(
       createCard(
         item,
@@ -99,14 +100,10 @@ getInitialCards().then((data) => {
       )
     );
   });
-});
-
-// Получение данных пользователя и их вывод в соответствующее место
-getUserId().then((data) => {
-  profileTitle.textContent = data.name;
-  profileDescription.textContent = data.about;
-  profileImage.style.backgroundImage = `url(${data.avatar})`;
-});
+  profileTitle.textContent = user.name;
+  profileDescription.textContent = user.about;
+  profileImage.style.backgroundImage = `url(${user.avatar})`;
+})
 
 export const handleLikeCard = (card, cardLikeButton, cardLikesCounter) => {
   if (!cardLikeButton.classList.contains("card__like-button_is-active")) {
