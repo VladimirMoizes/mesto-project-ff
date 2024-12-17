@@ -21,7 +21,9 @@
       </header>
       <main class="content">
         <section class="profile page__section">
-          <div class="profile__image"></div>
+          <div class="profile__image">
+            <div class="overlay"></div>
+          </div>
           <div class="profile__info">
             <h1 class="profile__title"></h1>
             <button class="profile__edit-button" type="button"></button>
@@ -114,6 +116,30 @@
           </form>
         </div>
       </div>
+
+      <div class="popup popup_type_new-ava">
+        <div class="popup__content">
+          <button type="button" class="popup__close"></button>
+          <h3 class="popup__title">Обновить аватар</h3>
+          <form class="popup__form" name="new-avatar" novalidate>
+            <label class="label">
+              <input
+                id="url-input"
+                type="url"
+                name="link"
+                class="popup__input popup__input_type_url"
+                placeholder="Ссылка на картинку для аватара"
+                required
+              />
+              <span class="url-input-error form__input-error"></span>
+            </label>
+            <button type="submit" class="button popup__button">
+              Сохранить
+            </button>
+          </form>
+        </div>
+      </div>
+
       <div class="popup popup_type_image">
         <div class="popup__content popup__content_content_image">
           <button type="button" class="popup__close"></button>
@@ -131,7 +157,10 @@
         <button type="button" class="card__delete-button"></button>
         <div class="card__description">
           <h2 class="card__title"></h2>
-          <button type="button" class="card__like-button"></button>
+          <div class="card__like-count">
+            <button type="button" class="card__like-button"></button>
+            <p class="card__like-text"></p>
+          </div>
         </div>
       </li>
     </template>

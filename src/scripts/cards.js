@@ -27,38 +27,53 @@
 // ];
 
 // Клонируем шаблон для карточки
-const cardTemplate = document.querySelector("#card-template").content;
+export const cardTemplate = document.querySelector("#card-template").content;
 
 // Функция создания карточки
-export function createCard(card, deleteCard, likeCard, showImage) {
+export function createCard(
+  card,
+  deleteCard,
+  likeCard,
+  showImage,
+  deleteCardFetch
+) {
   const cardsForLike = document.querySelector(".places__list");
 
   const cardElement = cardTemplate.querySelector(".card").cloneNode(true);
   const cardElementImage = cardElement.querySelector(".card__image");
   const cardElementTitle = cardElement.querySelector(".card__title");
   const cardDeleteButton = cardElement.querySelector(".card__delete-button");
+  const countLikes = cardElement.querySelector(".card__like-text");
+  // console.log(cardElement);
 
   cardElementImage.src = card.link; // Добавлен src для изображения
   cardElementImage.alt = card.name; // Добавлен alt для изображения
   cardElementTitle.textContent = card.name; // Добавлена подписть для изображения
 
+  if (card.owner._id !== "1da0c5b8f0455ce337c799da") {
+    cardDeleteButton.remove();
+  }
+
+  countLikes.textContent = card.likes.length;
+
   // слушатель для кнопки удаления выполняет функцию удаления
   cardDeleteButton.addEventListener("click", function (evt) {
     deleteCard(evt.target.closest(".places__item"));
+    deleteCardFetch(card);
   });
 
   // При нажатии на картинку выполняется функция открытия картинки на весь экран
   cardElementImage.addEventListener("click", () => showImage(card));
 
   // Слушатель для лайка
-  cardsForLike.addEventListener("click", likeCard);
+  cardsForLike.addEventListener("click", () => likeCard);
 
   return cardElement;
 }
 
 // Функция удаления карточки
-export function deleteCardFunction(del) {
-  del.remove();
+export function deleteCardFunction(evt) {
+  evt.remove();
 }
 
 // Функция лайка карточки
@@ -66,4 +81,5 @@ export function likeCardFunction(evt) {
   if (evt.target.classList.contains("card__like-button")) {
     evt.target.classList.toggle("card__like-button_is-active");
   }
+  // putLike();
 }

@@ -7,6 +7,29 @@
   background-size: cover;
   background-position: center;
   margin: 0 29px 0 0;
+  position: relative;
+}
+
+.profile__image:hover {
+  cursor: pointer;
+}
+
+.profile__image:hover .overlay {
+  position: absolute;
+  inset: 0;
+  background-color: rgba(0, 0, 0, 0.8);
+  inline-size: 100%;
+  block-size: 100%;
+}
+
+.profile__image:hover::after {
+  content: "";
+  background-image: url(../../../images/Vector.svg);
+  position: absolute;
+  inset: 0;
+  background-repeat: no-repeat;
+  background-size: 26px;
+  background-position: center;
 }
 
 @media screen and (max-width: 740px) {

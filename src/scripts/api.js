@@ -24,14 +24,46 @@ export const editProfile = (data) => {
   return fetch(`${config.baseUrl}/users/me`, {
     method: "PATCH",
     headers: config.headers,
-    body: JSON.stringify(data)
-  }).then((res) => res.json())
+    body: JSON.stringify(data),
+  }).then((res) => res.json());
+};
+
+export const changeAvatar = (avatar) => {
+  return fetch(`${config.baseUrl}/users/me/avatar`, {
+    method: "PATCH",
+    headers: config.headers,
+    body: JSON.stringify(avatar),
+  }).then((res) => res.json());
 };
 
 export const addNewCard = (data) => {
   return fetch(`${config.baseUrl}/cards`, {
     method: "POST",
     headers: config.headers,
-    body: JSON.stringify(data)
-  }).then(res => res.json())
+    body: JSON.stringify(data),
+  }).then((res) => res.json());
+};
+
+export const deleteCard = (card) => {
+  fetch(`${config.baseUrl}/cards/${card._id}`, {
+    method: "DELETE",
+    headers: config.headers,
+    body: JSON.stringify(card),
+  }).then((res) => res.json());
+};
+
+export const addLike = (card) => {
+  fetch(`${config.baseUrl}/cards/likes/${card._id}`, {
+    method: "PUT",
+    headers: config.headers,
+    body: JSON.stringify(card),
+  }).then((res) => res.json());
+};
+
+export const deleteCardLike = (card) => {
+  fetch(`${config.baseUrl}/cards/likes/${card._id}`, {
+    method: "DELETE",
+    headers: config.headers,
+    body: JSON.stringify(card),
+  }).then((res) => res.json());
 };
