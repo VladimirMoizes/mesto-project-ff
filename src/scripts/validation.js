@@ -1,4 +1,4 @@
-// Здесь будет находиться всё, связанное с валидацией форм, кроме вызова функций enableValidation и clearValidation
+// Здесь находится всё, связанное с валидацией форм, кроме вызова функций enableValidation и clearValidation
 // Они вызываются в index.js
 
 // Функция показа ошибки
@@ -30,8 +30,8 @@ const hideInputError = (formElement, inputElement, parameters) => {
 const isValid = (formElement, inputElement, parameters) => {
   if (inputElement.validity.patternMismatch) {
     // данные атрибута доступны у элемента инпута через ключевое слово dataset.
-    // обратите внимание, что в js имя атрибута пишется в camelCase (да-да, в
-    // HTML мы писали в kebab-case, это не опечатка)
+    // В js имя атрибута пишется в camelCase,
+    // в HTML мы писали в kebab-case
     inputElement.setCustomValidity(inputElement.dataset.errorMessage);
   } else {
     inputElement.setCustomValidity("");

@@ -1,5 +1,5 @@
 import "./pages/index.css";
-import { createCard, deleteCardFunction } from "./scripts/cards";
+import { createCard } from "./scripts/cards";
 import { openPopup, closePopup } from "./scripts/modal";
 import { enableValidation, clearValidation } from "./scripts/validation";
 import {
@@ -12,8 +12,6 @@ import {
   addLike,
   deleteCardLike,
 } from "./scripts/api";
-
-// Я ЗАБЫЛ ЗАПУШИТЬ, ПРОСТИТЕ)
 
 // Форма для обновления аватара
 const avatar = document.querySelector(".profile__image");
@@ -36,13 +34,10 @@ const nameInput = formElement.querySelector('input[name="name"]');
 const jobInput = formElement.querySelector('input[name="description"]');
 const buttonProfileForm = profilePopup.querySelector(".button");
 
-// Данные формы профиля
+// Данные профиля на странице
 const profileTitle = document.querySelector(".profile__title");
 const profileDescription = document.querySelector(".profile__description");
 const profileImage = document.querySelector(".profile__image");
-
-nameInput.value = profileTitle.textContent;
-jobInput.value = profileDescription.textContent;
 
 // Модалка для картинок
 const popupImage = document.querySelector(".popup_type_image");
@@ -65,6 +60,17 @@ const linkInputAdd = formElementAdd.querySelector('input[name="link"]');
 // Галерея карточек
 const gallery = document.querySelector(".places__list");
 
+// Объект с классами для валидации
+const objectValidation = {
+  formSelector: ".popup__form",
+  inputSelector: ".popup__input",
+  submitButtonSelector: ".popup__button",
+  inactiveButtonClass: "popup__button_disabled",
+  inputErrorClass: "popup__input_type_error",
+  errorClass: "popup__error_visible",
+};
+
+// Плавное открытие всех модалок
 const popupAll = document.querySelectorAll(".popup");
 popupAll.forEach((item) => {
   item.classList.add("popup_is-animated");
@@ -79,43 +85,58 @@ function showImageFunction(image) {
 }
 
 // Вызов функции, отвечающей за валидацию всех форм
-enableValidation({
-  formSelector: ".popup__form",
-  inputSelector: ".popup__input",
-  submitButtonSelector: ".popup__button",
-  inactiveButtonClass: "popup__button_disabled",
-  inputErrorClass: "popup__input_type_error",
-  errorClass: "popup__error_visible",
-});
+enableValidation(objectValidation);
 
-Promise.all([getInitialCards(), getUserId()]).then(([card, user]) => {
-  card.forEach((item) => {
-    gallery.append(
-      createCard(
-        item,
-        deleteCardFunction,
-        handleLikeCard,
-        showImageFunction,
-        () => deleteCard(item)
-      )
-    );
+// Массив промисов. Выполнится, когда с сервера придут данные карточек и пользователя
+Promise.all([getInitialCards(), getUserId()])
+  .then(([card, user]) => {
+    card.forEach((item) => {
+      gallery.append(
+        createCard(
+          item,
+          handleDeleteCard,
+          handleLikeCard,
+          showImageFunction,
+          user._id
+        )
+      );
+    });
+    profileTitle.textContent = user.name;
+    profileDescription.textContent = user.about;
+    profileImage.style.backgroundImage = `url(${user.avatar})`;
+  })
+  .catch((err) => {
+    console.log(err);
   });
-  profileTitle.textContent = user.name;
-  profileDescription.textContent = user.about;
-  profileImage.style.backgroundImage = `url(${user.avatar})`;
-})
 
+// Функция удаления карточки
+export const handleDeleteCard = (card, cardDeleteButton) => {
+  cardDeleteButton.closest(".places__item").remove();
+  deleteCard(card).catch((err) => {
+    console.log(err);
+  });
+};
+
+// Функция постановки и снятия лайка
 export const handleLikeCard = (card, cardLikeButton, cardLikesCounter) => {
   if (!cardLikeButton.classList.contains("card__like-button_is-active")) {
-    addLike(card).then((item) => {
-      cardLikeButton.classList.add("card__like-button_is-active");
-      cardLikesCounter.textContent = item.likes.length;
-    });
+    addLike(card)
+      .then((item) => {
+        cardLikeButton.classList.add("card__like-button_is-active");
+        cardLikesCounter.textContent = item.likes.length;
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   } else {
-    deleteCardLike(card).then((item) => {
-      cardLikeButton.classList.remove("card__like-button_is-active");
-      cardLikesCounter.textContent = item.likes.length;
-    });
+    deleteCardLike(card)
+      .then((item) => {
+        cardLikeButton.classList.remove("card__like-button_is-active");
+        cardLikesCounter.textContent = item.likes.length;
+      })
+      .catch((err) => {
+        console.log(err);
+      });
   }
 };
 
@@ -131,14 +152,20 @@ formElement.addEventListener("submit", (evt) => {
   };
 
   // Сохранение заполненных данных в форме профиля
-  editProfile(valueForm).then((updateData) => {
-    profileTitle.textContent = updateData.name;
-    profileDescription.textContent = updateData.about;
-    closePopup(profilePopup);
-  });
-  buttonProfileForm.textContent = "Сохранение...";
+  editProfile(valueForm)
+    .then((buttonProfileForm.textContent = "Сохранение..."))
+    .then((updateData) => {
+      profileTitle.textContent = updateData.name;
+      profileDescription.textContent = updateData.about;
+      closePopup(profilePopup);
+    })
+    .catch((err) => {
+      console.log(err);
+    })
+    .finally((buttonProfileForm.textContent = "Сохранить"));
 });
 
+// Смена аватара
 avatarForm.addEventListener("submit", (evt) => {
   evt.preventDefault();
 
@@ -146,17 +173,21 @@ avatarForm.addEventListener("submit", (evt) => {
     avatar: avatarLink.value,
   };
 
-  changeAvatar(valueLink).then((newAvatar) => {
-    // profileImage.style.backgroundImage = `url(${newAvatar.avatar})`;
-    closePopup(formAvatar);
-    getUserId().then((data) => {
+  changeAvatar(valueLink)
+    .then((buttonAvatarForm.textContent = "Сохранение..."))
+    .then((data) => {
       profileImage.style.backgroundImage = `url(${data.avatar})`;
-    });
-  });
-  buttonAvatarForm.textContent = "Сохранение...";
+    })
+    .catch((err) => {
+      console.log(err);
+    })
+    .finally((buttonAvatarForm.textContent = "Сохранить"));
+
+  closePopup(formAvatar);
   avatarForm.reset();
 });
 
+// Добавление новой карточки при отправке формы
 formElementAdd.addEventListener("submit", (evt) => {
   evt.preventDefault();
   const newCardObj = {
@@ -165,21 +196,25 @@ formElementAdd.addEventListener("submit", (evt) => {
   };
 
   // Отправление на сервер новой карточки и её вывод на страницу
-  addNewCard(newCardObj).then((newCard) => {
-    // console.log(newCard._id);
-    gallery.prepend(
-      createCard(
-        newCard,
-        deleteCardFunction,
-        handleLikeCard,
-        showImageFunction,
-        () => deleteCard(newCard)
-      )
-    );
-  });
+  addNewCard(newCardObj)
+    .then((buttonImageForm.textContent = "Сохранение..."))
+    .then((newCard) => {
+      gallery.prepend(
+        createCard(
+          newCard,
+          handleDeleteCard,
+          handleLikeCard,
+          showImageFunction,
+          newCard.owner._id
+        )
+      );
+    })
+    .catch((err) => {
+      console.log(err);
+    })
+    .finally((buttonImageForm.textContent = "Сохранить"));
   closePopup(addPopup);
   formElementAdd.reset();
-  buttonImageForm.textContent = "Сохранение...";
 });
 
 // Слушатели клика для двух форм для открытия и очистки ошибок валидации
@@ -187,47 +222,33 @@ profileButton.addEventListener("click", () => {
   openPopup(profilePopup);
   nameInput.value = profileTitle.textContent;
   jobInput.value = profileDescription.textContent;
-  buttonProfileForm.textContent = "Сохранить";
 
   // Чтобы при открытии модалки, кнопка была активной всегда,
   // так как подставляются всегда валидные данные
   buttonProfileForm.classList.remove("popup__button_disabled");
   buttonProfileForm.disabled = false;
-  //
 
-  clearValidation(profilePopup, {
-    formSelector: ".popup__form",
-    inputSelector: ".popup__input",
-    submitButtonSelector: ".popup__button",
-    inactiveButtonClass: "popup__button_disabled",
-    inputErrorClass: "popup__input_type_error",
-    errorClass: "popup__error_visible",
-  });
+  // Функция очистки валидации
+  clearValidation(profilePopup, objectValidation);
 });
 
+// Слушатель нажатия на кноку открытия модалки
+// добавления карточки
 addButton.addEventListener("click", () => {
   openPopup(addPopup);
   buttonImageForm.classList.add("popup__button_disabled");
   buttonImageForm.disabled = true;
-  buttonImageForm.textContent = "Сохранить";
-  clearValidation(addPopup, {
-    formSelector: ".popup__form",
-    inputSelector: ".popup__input",
-    submitButtonSelector: ".popup__button",
-    inactiveButtonClass: "popup__button_disabled",
-    inputErrorClass: "popup__input_type_error",
-    errorClass: "popup__error_visible",
-  });
+  clearValidation(addPopup, objectValidation);
 });
 
+// Слушатель нажатия на аватар
 avatar.addEventListener("click", () => {
   openPopup(formAvatar);
   buttonAvatarForm.classList.add("popup__button_disabled");
   buttonAvatarForm.disabled = true;
-  buttonAvatarForm.textContent = "Сохранить";
 });
 
-// Слушатели клика для двух форм для закрытия
+// Слушатели клика для закрытия модалок
 closeProfileButton.addEventListener("click", () => {
   closePopup(profilePopup);
 });
