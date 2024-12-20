@@ -1,23 +1,12 @@
 .popup__content {
   max-width: 430px;
   width: 100%;
+  min-height: 330px;
   background-color: #fff;
   border-radius: 10px;
   position: relative;
   box-sizing: border-box;
   padding: 34px 36px;
-}
-
-.popup__content-delete {
-  padding-block-end: 36px;
-}
-
-.popup__content:not(.popup__content-delete) {
-  min-height: 330px;
-}
-
-.popup__content-delete .popup__button {
-  margin-block-start: 38px;
 }
 
 @media screen and (max-width: 568px) {
