@@ -26,7 +26,7 @@ export function createCard(card, deleteCard, likeCard, showImage, userId) {
 
   // слушатель для кнопки удаления выполняет функцию удаления
   cardDeleteButton.addEventListener("click", () => {
-    deleteCard(card, cardDeleteButton);
+    deleteCard(card, cardElement);
   });
 
   // При нажатии на картинку выполняется функция открытия картинки на весь экран

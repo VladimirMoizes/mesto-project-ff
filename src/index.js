@@ -110,15 +110,16 @@ Promise.all([getInitialCards(), getUserId()])
   });
 
 // Функция удаления карточки
-export const handleDeleteCard = (card, cardDeleteButton) => {
-  cardDeleteButton.closest(".places__item").remove();
-  deleteCard(card).catch((err) => {
-    console.log(err);
-  });
+const handleDeleteCard = (card, cardElement) => {
+  deleteCard(card)
+    .then(cardElement.closest(".places__item").remove())
+    .catch((err) => {
+      console.log(err);
+    });
 };
 
 // Функция постановки и снятия лайка
-export const handleLikeCard = (card, cardLikeButton, cardLikesCounter) => {
+const handleLikeCard = (card, cardLikeButton, cardLikesCounter) => {
   if (!cardLikeButton.classList.contains("card__like-button_is-active")) {
     addLike(card)
       .then((item) => {
@@ -151,9 +152,10 @@ formElement.addEventListener("submit", (evt) => {
     about: jobInput.value,
   };
 
+  buttonProfileForm.textContent = "Сохранение...";
+
   // Сохранение заполненных данных в форме профиля
   editProfile(valueForm)
-    .then((buttonProfileForm.textContent = "Сохранение..."))
     .then((updateData) => {
       profileTitle.textContent = updateData.name;
       profileDescription.textContent = updateData.about;
@@ -173,8 +175,9 @@ avatarForm.addEventListener("submit", (evt) => {
     avatar: avatarLink.value,
   };
 
+  buttonAvatarForm.textContent = "Сохранение...";
+
   changeAvatar(valueLink)
-    .then((buttonAvatarForm.textContent = "Сохранение..."))
     .then((data) => {
       profileImage.style.backgroundImage = `url(${data.avatar})`;
     })
@@ -195,9 +198,10 @@ formElementAdd.addEventListener("submit", (evt) => {
     link: linkInputAdd.value,
   };
 
+  buttonImageForm.textContent = "Сохранение...";
+
   // Отправление на сервер новой карточки и её вывод на страницу
   addNewCard(newCardObj)
-    .then((buttonImageForm.textContent = "Сохранение..."))
     .then((newCard) => {
       gallery.prepend(
         createCard(
