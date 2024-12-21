@@ -181,13 +181,14 @@ avatarForm.addEventListener("submit", (evt) => {
     .then((data) => {
       profileImage.style.backgroundImage = `url(${data.avatar})`;
     })
+    .then(() => {
+      closePopup(formAvatar);
+      avatarForm.reset();
+    })
     .catch((err) => {
       console.log(err);
     })
     .finally((buttonAvatarForm.textContent = "Сохранить"));
-
-  closePopup(formAvatar);
-  avatarForm.reset();
 });
 
 // Добавление новой карточки при отправке формы
@@ -213,12 +214,14 @@ formElementAdd.addEventListener("submit", (evt) => {
         )
       );
     })
+    .then(() => {
+      closePopup(addPopup);
+      formElementAdd.reset();
+    })
     .catch((err) => {
       console.log(err);
     })
     .finally((buttonImageForm.textContent = "Сохранить"));
-  closePopup(addPopup);
-  formElementAdd.reset();
 });
 
 // Слушатели клика для двух форм для открытия и очистки ошибок валидации
